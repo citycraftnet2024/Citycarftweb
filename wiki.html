@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityCraft | Wiki & Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+        .sidebar-item.active { background: #06b6d4; color: black; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white antialiased" x-data="wikiSystem()" x-init="init()">
+
+    <header class="border-b border-zinc-800 bg-zinc-900/50 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="logo.png" alt="Logo" class="w-12 h-12 object-contain" onerror="this.src='https://via.placeholder.com/48?text=Logo'">
+                    <span class="text-xl font-black tracking-tighter text-cyan-400">WIKI</span>
+                </a>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="text-sm text-zinc-400 hover:text-white mr-4 transition">Zurück zum Hub</a>
+                <button @click="login()" class="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition-all text-zinc-400 hover:text-cyan-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 px-6 py-12">
+        <aside class="w-full md:w-64 space-y-2">
+            <template x-for="(item, index) in categories" :key="index">
+                <div class="group relative">
+                    <button @click="activeTab = index" 
+                        :class="activeTab === index ? 'bg-cyan-500 text-black' : 'bg-zinc-900 text-zinc-400 hover:bg-zinc-800'"
+                        class="w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex justify-between items-center">
+                        <span x-text="item.title"></span>
+                    </button>
+                    <button x-show="isAdmin" @click="removeTab(index)" class="absolute -right-2 -top-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </template>
+            <button x-show="isAdmin" @click="addTab()" class="w-full border-2 border-dashed border-zinc-700 p-3 rounded-xl text-zinc-500 hover:border-cyan-500 hover:text-cyan-500 transition mt-4">
+                + Neuer Reiter
+            </button>
+        </aside>
+
+        <main class="flex-1">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-[2rem] p-8 md:p-12 shadow-2xl relative min-h-[500px]">
+                <template x-if="categories[activeTab]">
+                    <div>
+                        <template x-if="isAdmin">
+                            <input type="text" x-model="categories[activeTab].title" class="bg-zinc-800 text-cyan-400 text-4xl font-black mb-6 w-full p-2 rounded-lg border border-cyan-500/30 outline-none focus:border-cyan-500">
+                        </template>
+                        <template x-if="!isAdmin">
+                            <h2 class="text-4xl font-black text-cyan-400 mb-6" x-text="categories[activeTab].title"></h2>
+                        </template>
+
+                        <template x-if="isAdmin">
+                            <textarea x-model="categories[activeTab].content" rows="15" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-4 text-zinc-300 leading-relaxed focus:border-cyan-500 outline-none"></textarea>
+                        </template>
+                        <template x-if="!isAdmin">
+                            <div class="text-zinc-300 text-lg leading-relaxed whitespace-pre-line" x-text="categories[activeTab].content"></div>
+                        </template>
+                    </div>
+                </template>
+
+                <div x-show="isAdmin" class="mt-8 flex justify-end">
+                    <button @click="saveData()" class="px-10 py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-green-900/20">
+                        Speichern & Schließen
+                    </button>
+                </div>
+            </div>
+
+            <footer class="mt-12 py-8 text-center text-zinc-500 text-sm border-t border-zinc-900">
+                © 2026 CityCraft. Nicht mit Mojang oder Microsoft verbunden.
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        function wikiSystem() {
+            return {
+                isAdmin: false,
+                activeTab: 0,
+                categories: [
+                    { title: 'Allgemeines', content: 'Willkommen im CityCraft Wiki.' },
+                    { title: 'Regeln', content: 'Hier stehen die Regeln...' },
+                    { title: 'Befehle', content: 'Hier stehen die Befehle...' },
+                    { title: 'Plots', content: 'Infos zu den Grundstücken...' },
+                    { title: 'Ränge', content: 'Alles zu den Rängen...' }
+                ],
+                init() {
+                    const saved = localStorage.getItem('citycraft_wiki');
+                    if (saved) { this.categories = JSON.parse(saved); }
+                },
+                login() {
+                    let pw = prompt("Bitte Admin-Passwort eingeben:");
+                    if (pw === "!Citycraft") { this.isAdmin = true; } 
+                    else { alert("Falsches Passwort!"); }
+                },
+                addTab() {
+                    this.categories.push({ title: 'Neues Thema', content: 'Inhalt hier schreiben...' });
+                    this.activeTab = this.categories.length - 1;
+                },
+                removeTab(index) {
+                    if(confirm('Diesen Reiter wirklich löschen?')) {
+                        this.categories.splice(index, 1);
+                        if (this.activeTab >= this.categories.length) { this.activeTab = 0; }
+                    }
+                },
+                saveData() {
+                    localStorage.setItem('citycraft_wiki', JSON.stringify(this.categories));
+                    this.isAdmin = false;
+                    alert("Wiki erfolgreich aktualisiert!");
+                }
+            }
+        }
+    </script>
+</body>
+</html>

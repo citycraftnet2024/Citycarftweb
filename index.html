@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityCraft | Minecraft CityBuild Netzwerk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white antialiased" x-data="citycraft()">
+
+    <header class="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-900/95 backdrop-blur">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col lg:flex-row items-center justify-between gap-6">
+            
+            <div class="flex items-center gap-10 flex-wrap justify-center lg:justify-start">
+                <a href="#">
+                    <img src="logo.png" alt="CityCraft Logo" class="w-24 h-24 lg:w-32 lg:h-32 object-contain" onerror="this.src='https://via.placeholder.com/128?text=Logo'">
+                </a>
+                
+                <nav>
+                    <ul class="flex items-center gap-6 text-sm font-semibold">
+                        <li><a href="#" class="hover:text-cyan-400 transition-colors">Home</a></li>
+                        <li><a href="wiki.html" class="hover:text-cyan-400 transition-colors">Wiki</a></li>
+                        <li><a href="http://citycraft.net:20082/index.html" target="_blank" class="hover:text-cyan-400 transition-colors">Market</a></li>
+                        <li><a href="https://citycraft.tebex.io" target="_blank" class="hover:text-cyan-400 transition-colors">Shop</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="flex items-center gap-4 flex-wrap justify-center">
+                <button @click="copyIP()" class="px-5 py-2 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition-all shadow-lg text-lg">
+                    citycraft.net
+                </button>
+                <a href="https://discord.gg/59WgmzftX3" target="_blank" class="px-5 py-2 rounded-2xl border border-zinc-700 hover:border-cyan-400 hover:text-cyan-400 transition-all">
+                    Discord
+                </a>
+            </div>
+        </div>
+
+        <div x-show="copyMessage" x-cloak x-transition class="text-center pb-3 text-cyan-400 font-semibold" x-text="copyMessage"></div>
+    </header>
+
+    <main>
+        <section class="max-w-7xl mx-auto px-6 py-24">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <p class="uppercase tracking-[0.3em] text-cyan-400 text-sm mb-4">Minecraft CityBuild Netzwerk</p>
+                    <h1 class="text-5xl lg:text-7xl font-black leading-tight mb-8">Willkommen auf CityCraft</h1>
+                    <p class="text-zinc-300 text-lg leading-relaxed mb-10">
+                        Spiele gemeinsam mit anderen Spielern auf einem modernen CityBuild Server. 
+                        Baue Häuser, gründe Städte und entdecke die Community.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <button @click="copyIP()" class="px-8 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition-all">
+                            Server-IP kopieren
+                        </button>
+                        <a href="wiki.html" class="px-8 py-4 rounded-2xl border border-zinc-700 hover:border-cyan-400 hover:text-cyan-400 transition-all">
+                            Wiki öffnen
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-cyan-500/20 to-blue-500/10 border border-cyan-500/20 rounded-[2rem] p-10 shadow-2xl">
+                    <div class="space-y-8">
+                        <div>
+                            <p class="text-zinc-400 text-sm mb-2">Server-Adresse</p>
+                            <h2 class="text-4xl font-black text-cyan-400">citycraft.net</h2>
+                        </div>
+                        <div class="bg-zinc-900/70 border border-zinc-800 rounded-2xl p-6">
+                            <p class="text-zinc-400 text-sm">Spielmodus</p>
+                            <h3 class="text-2xl font-bold mt-2">CityBuild</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-5xl mx-auto px-6 pb-24">
+            <div class="flex items-center justify-center gap-4 mb-10">
+                <button @click="edition = 'java'" :class="edition === 'java' ? 'bg-cyan-400 text-black' : 'bg-zinc-800 text-white hover:bg-zinc-700'" class="px-8 py-3 rounded-2xl font-bold transition-all">
+                    Java
+                </button>
+                <button @click="edition = 'bedrock'" :class="edition === 'bedrock' ? 'bg-cyan-400 text-black' : 'bg-zinc-800 text-white hover:bg-zinc-700'" class="px-8 py-3 rounded-2xl font-bold transition-all">
+                    Bedrock
+                </button>
+            </div>
+
+            <div x-show="edition === 'java'" class="bg-zinc-900 border border-zinc-800 rounded-[2rem] p-10">
+                <h2 class="text-4xl font-black text-cyan-400 mb-6">Java Edition Anleitung</h2>
+                <ol class="space-y-4 text-zinc-300 text-lg list-decimal list-inside">
+                    <li>Minecraft Java Edition öffnen</li>
+                    <li>Auf Multiplayer klicken</li>
+                    <li>Server hinzufügen auswählen</li>
+                    <li>citycraft.net eingeben</li>
+                    <li>Server beitreten</li>
+                </ol>
+            </div>
+
+            <div x-show="edition === 'bedrock'" class="bg-zinc-900 border border-zinc-800 rounded-[2rem] p-10">
+                <h2 class="text-4xl font-black text-cyan-400 mb-6">Bedrock Edition Anleitung</h2>
+                <ol class="space-y-4 text-zinc-300 text-lg list-decimal list-inside">
+                    <li>Minecraft Bedrock öffnen</li>
+                    <li>Auf Server klicken</li>
+                    <li>Server hinzufügen auswählen</li>
+                    <li>citycraft.net eingeben</li>
+                    <li>Verbinden und spielen</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="wiki" class="max-w-7xl mx-auto px-6 pb-24">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-[2rem] p-10 text-center">
+                <h2 class="text-5xl font-black text-cyan-400 mb-10">Befehle Vorschau</h2>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-8 text-left">
+                        <h3 class="text-3xl font-black text-cyan-400 mb-6">Plot Befehle</h3>
+                        <div class="grid md:grid-cols-2 gap-5">
+                            <div class="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
+                                <h4 class="text-xl font-bold text-cyan-400 mb-2">/plot claim</h4>
+                                <p class="text-zinc-300">Beansprucht ein freies Grundstück.</p>
+                            </div>
+                            <div class="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
+                                <h4 class="text-xl font-bold text-cyan-400 mb-2">/plot home</h4>
+                                <p class="text-zinc-300">Teleportiert dich zu deinem Plot.</p>
+                            </div>
+                            <div class="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
+                                <h4 class="text-xl font-bold text-cyan-400 mb-2">/plot auto</h4>
+                                <p class="text-zinc-300">Gibt dir automatisch ein freies Plot.</p>
+                            </div>
+                            <div class="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
+                                <h4 class="text-xl font-bold text-cyan-400 mb-2">/plot trust NAME</h4>
+                                <p class="text-zinc-300">Gibt Spielern Rechte auf deinem Plot.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-10">
+                        <a href="wiki.html" class="inline-block px-10 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold transition-all shadow-xl">
+                            Alle Wiki-Einträge ansehen
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="border-t border-zinc-800 py-8 text-center text-zinc-500 text-sm px-6">
+            © 2026 Copyright CityCraft. Nicht mit Mojang oder Microsoft verbunden.
+        </footer>
+    </main>
+
+    <script>
+        function citycraft() {
+            return {
+                edition: 'java',
+                copyMessage: '',
+                copyIP() {
+                    const ip = 'citycraft.net';
+                    navigator.clipboard.writeText(ip).then(() => {
+                        this.copyMessage = `IP kopiert: ${ip}`;
+                    }).catch(() => {
+                        this.copyMessage = `Kopiere diese IP manuell: ${ip}`;
+                    });
+
+                    setTimeout(() => {
+                        this.copyMessage = '';
+                    }, 3000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
